@@ -27,21 +27,30 @@ app.get("/api/:date?", (req, res) => {
   const regex = /[- ]/g;
   const matched = inputDate.match(regex);
 
+  // possible time in milliseconds
   if (matched === null) {
     const parsedNumber = parseInt(inputDate);
+
+    // if not parsing results in NaN, its an invalid date
     if (isNaN(parsedNumber)) {
       return res.json({ error: "Invalid Date" });
     }
     
+    // otherwise it is a valid date
     const unixDate = new Date(parsedNumber);
     return res.json({ unix: unixDate.getTime(), utc: unixDate.toUTCString() });
   }
 
+  // possible timestamp
   if (matched !== null) {
     const timeStampDate = new Date(inputDate);
+
+    // if converting to date fails, its an invalid date
     if (timeStampDate.toString() === "Invalid Date") {
       return res.json({ error: timeStampDate.toString() });
     }
+
+    // otherwise it is a valid date
     return res.json({ unix: timeStampDate.getTime(), utc: timeStampDate.toUTCString() });
   }  
 });
